@@ -200,17 +200,5 @@ func two() {
 			//printGraph(graph, maxRow, maxCol)
 		}
 	}
-	// RLBCJGLU
 	printGraph(graph, maxRow, maxCol)
-	//count := 0
-	//
-	//for row := 0; row <= maxRow; row++ {
-	//	for col := 0; col <= maxCol; col++ {
-	//		if graph[row][col] == true {
-	//			count += 1
-	//		}
-	//	}
-	//}
-
-	//fmt.Printf("%d\n", count)
 }
