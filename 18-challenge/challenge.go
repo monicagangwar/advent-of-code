@@ -16,131 +16,168 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 
-	snailfishNumbers := make([]string, 0)
+	snailfishNumbers := make([][]interface{}, 0)
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		snailfishNumbers = append(snailfishNumbers, line)
+		newNum := make([]interface{}, 0)
+		for _, ch := range line {
+			if ch == '[' || ch == ']' || ch == ',' {
+				newNum = append(newNum, string(ch))
+			} else {
+				num, _ := strconv.ParseInt(string(ch), 10, 64)
+				newNum = append(newNum, num)
+			}
+		}
+		snailfishNumbers = append(snailfishNumbers, newNum)
 	}
 
-	output := performAddition(snailfishNumbers)
+	partOne(snailfishNumbers)
+	partTwo(snailfishNumbers)
 
-	fmt.Printf("\nadded       : %s", output)
-
-	//fmt.Println(getMagnitude(output))
 }
 
-func performAddition(numbers []string) string {
-	output := ""
+func partOne(snailfishNumbers [][]interface{}) {
+	output := performAdditionList(snailfishNumbers)
+
+	fmt.Printf("\nadded       : %v", output)
+
+	fmt.Printf("\nmagnitude   : %v", getMagnitude(output))
+}
+
+func partTwo(snailfishNumbers [][]interface{}) {
+	largestMagnitude := int64(0)
+	for i := 0; i < len(snailfishNumbers); i++ {
+		for j := i + 1; j < len(snailfishNumbers); j++ {
+			output1 := performAddition(snailfishNumbers[i], snailfishNumbers[j])
+			magnitude1 := getMagnitude(output1)
+
+			if magnitude1 > largestMagnitude {
+				largestMagnitude = magnitude1
+			}
+
+			output2 := performAddition(snailfishNumbers[j], snailfishNumbers[i])
+			magnitude2 := getMagnitude(output2)
+
+			if magnitude2 > largestMagnitude {
+				largestMagnitude = magnitude2
+			}
+
+		}
+	}
+
+	fmt.Printf("\nlargest magnitude   : %d", largestMagnitude)
+}
+
+func performAddition(num1 []interface{}, num2 []interface{}) []interface{} {
+	addedNum := make([]interface{}, 0)
+	addedNum = append(addedNum, "[")
+	addedNum = append(addedNum, num1...)
+	addedNum = append(addedNum, ",")
+	addedNum = append(addedNum, num2...)
+	addedNum = append(addedNum, "]")
+	return reduce(addedNum)
+}
+
+func performAdditionList(numbers [][]interface{}) []interface{} {
+	output := make([]interface{}, 0)
 	for _, number := range numbers {
-		if output == "" {
+		if len(output) == 0 {
 			output = number
 		} else {
-			output = fmt.Sprintf("[%s,%s]", output, number)
-			output = reduce(output)
+			output = performAddition(output, number)
 		}
-		//fmt.Printf("\nadded       : %s", output)
 	}
 	return output
 }
 
-func reduce(number string) string {
-	numberRepresentationList := make([]interface{}, 0)
-	for _, ch := range number {
-		if !(ch == '[' || ch == ']' || ch == ',') {
-			num, _ := strconv.ParseInt(string(ch), 10, 64)
-			numberRepresentationList = append(numberRepresentationList, num)
-		} else {
-			numberRepresentationList = append(numberRepresentationList, string(ch))
-		}
-	}
-	fmt.Printf("orginal     : %v", numberRepresentationList)
-	idx := 0
+func tryExplode(number []interface{}) ([]interface{}, bool) {
 	level := 0
-	for {
-		if idx == len(numberRepresentationList)-1 {
-			break
-		}
-
-		if numberRepresentationList[idx] == "[" {
+	for idx, ch := range number {
+		if ch == "[" {
 			level++
-		} else if numberRepresentationList[idx] == "]" {
+		} else if ch == "]" {
 			level--
 		}
 
 		if level == 5 {
-			curIdx := idx
-			idx = 0
-			level = 0
-
-			left := numberRepresentationList[curIdx+1].(int64)
-			right := numberRepresentationList[curIdx+3].(int64)
-
-			for i := curIdx - 1; i >= 0; i-- {
-				num, ok := numberRepresentationList[i].(int64)
+			left := number[idx+1].(int64)
+			right := number[idx+3].(int64)
+			for i := idx - 1; i >= 0; i-- {
+				num, ok := number[i].(int64)
 				if ok {
-					numberRepresentationList[i] = num + left
+					number[i] = num + left
 					break
 				}
 			}
 
-			for i := curIdx + 4; i < len(numberRepresentationList); i++ {
-				num, ok := numberRepresentationList[i].(int64)
+			for i := idx + 4; i < len(number); i++ {
+				num, ok := number[i].(int64)
 				if ok {
-					numberRepresentationList[i] = num + right
+					number[i] = num + right
 					break
 				}
 			}
 
-			newNumberRepresentationList := make([]interface{}, 0)
-			newNumberRepresentationList = append(newNumberRepresentationList, numberRepresentationList[:curIdx]...)
-			newNumberRepresentationList = append(newNumberRepresentationList, int64(0))
-			newNumberRepresentationList = append(newNumberRepresentationList, numberRepresentationList[curIdx+5:]...)
+			reducedNumber := make([]interface{}, 0)
+			reducedNumber = append(reducedNumber, number[:idx]...)
+			reducedNumber = append(reducedNumber, int64(0))
+			reducedNumber = append(reducedNumber, number[idx+5:]...)
+			return reducedNumber, true
 
-			numberRepresentationList = newNumberRepresentationList
-
-			fmt.Printf("\nexploded    : %v", numberRepresentationList)
-			continue
-
-		} else {
-			num, ok := numberRepresentationList[idx].(int64)
-			if ok && num >= 10 {
-				curIdx := idx
-				idx = 0
-				level = 0
-
-				newNumberRepresentationList := make([]interface{}, 0)
-				newNumberRepresentationList = append(newNumberRepresentationList, numberRepresentationList[:curIdx]...)
-				newNumberRepresentationList = append(newNumberRepresentationList, "[", num/2, ",", (num/2)+(num%2), "]")
-				newNumberRepresentationList = append(newNumberRepresentationList, numberRepresentationList[curIdx+1:]...)
-				numberRepresentationList = newNumberRepresentationList
-
-				fmt.Printf("\nsplit       : %v", numberRepresentationList)
-
-				continue
-
-			}
 		}
-
-		idx++
 	}
 
-	return convertToString(numberRepresentationList)
+	return number, false
 }
 
-func convertToString(numberList []interface{}) string {
-	output := ""
-	for _, ch := range numberList {
+func trySplit(number []interface{}) ([]interface{}, bool) {
+	for idx, ch := range number {
 		num, ok := ch.(int64)
-		if ok {
-			output = fmt.Sprintf("%s%d", output, num)
-		} else {
-			output = fmt.Sprintf("%s%s", output, ch.(string))
+		if ok && num >= 10 {
+			reducedNumber := make([]interface{}, 0)
+			reducedNumber = append(reducedNumber, number[:idx]...)
+			reducedNumber = append(reducedNumber, "[", num/2, ",", (num/2)+(num%2), "]")
+			reducedNumber = append(reducedNumber, number[idx+1:]...)
+			return reducedNumber, true
 		}
 	}
-	return output
+	return number, false
 }
 
-func getMagnitude(number string) int {
-	return 0
+func reduce(number []interface{}) []interface{} {
+	//fmt.Printf("orginal     : %v", number)
+	changed := false
+	for {
+		number, changed = tryExplode(number)
+		if changed {
+			//fmt.Printf("\nexploded    : %v", number)
+			continue
+		}
+		number, changed = trySplit(number)
+		if !changed {
+			return number
+		}
+		//else {
+		//	fmt.Printf("\nsplit       : %v", number)
+		//}
+	}
+}
+
+func getMagnitude(number []interface{}) int64 {
+	stack := make([]interface{}, 0)
+	for _, ch := range number {
+		if ch == "]" {
+			right := stack[len(stack)-1].(int64)
+			left := stack[len(stack)-2].(int64)
+
+			stack = stack[:len(stack)-3]
+
+			stack = append(stack, (left*3)+(right*2))
+
+		} else if ch != "," {
+			stack = append(stack, ch)
+		}
+	}
+	return stack[0].(int64)
 }
