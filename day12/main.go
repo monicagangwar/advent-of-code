@@ -19,7 +19,7 @@ func main() {
 		for col, ch := range line {
 			if string(ch) == "S" {
 				partOne = compute(row, col, lines)
-				partTwo = partOne
+				//partTwo = partOne
 			}
 			if string(ch) == "a" {
 				output := compute(row, col, lines)
