@@ -1,2 +1,6 @@
 .idea
+<<<<<<< HEAD
 **/input.txt
+=======
+vendor
+>>>>>>> b278758b7fea0305b8badb90fa82b6a1fa223b2c
