@@ -11,27 +11,16 @@ import (
 //go:embed input.txt
 var jetBlows []byte
 
-type rockCacheKey struct {
-	x          int
-	rockType   int
-	jetBlowIdx int
-}
-
-type rockCacheValue struct {
-	rockIdx int
-	height  int
-}
-
 func main() {
-	fmt.Println(findMaxHeight(2022, nil))
+	fmt.Println(findMaxHeight(2022))
 }
 
-func findMaxHeight(maxRockCount int, cache map[rockCacheKey]rockCacheValue) int {
-	jetIdx, maxHeight, rockCount := 0, 0, 0
+func findMaxHeight(maxRockCount int) int {
+	jetIdx, maxHeight, rockCount := 0, 0, 1
 	x, y := 3, 4
 	well := make([][8]int, 0)
 
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 10000000; i++ {
 		var row [8]int
 		well = append(well, row)
 	}
@@ -53,7 +42,7 @@ func findMaxHeight(maxRockCount int, cache map[rockCacheKey]rockCacheValue) int 
 			maxHeight = max(maxHeight, getHeight(x, y, rockType))
 			x, y = 3, maxHeight+4
 			rockCount++
-			if rockCount == maxRockCount {
+			if rockCount == maxRockCount+1 {
 				break
 			}
 		}
@@ -128,19 +117,19 @@ func canGoToPos(curX, curY, x, y, rockType int, well [][8]int) bool {
 
 func getCoordinatesForPiece(x, y int, rockType int) [][2]int {
 	switch rockType {
-	case 0:
+	case 1:
 		// ----
 		return [][2]int{{x, y}, {x + 1, y}, {x + 2, y}, {x + 3, y}}
-	case 1:
+	case 2:
 		// +
 		return [][2]int{{x, y + 1}, {x + 1, y + 1}, {x + 2, y + 1}, {x + 1, y}, {x + 1, y + 2}}
-	case 2:
+	case 3:
 		// _|
 		return [][2]int{{x, y}, {x + 1, y}, {x + 2, y}, {x + 2, y + 1}, {x + 2, y + 2}}
-	case 3:
+	case 4:
 		// |
 		return [][2]int{{x, y}, {x, y + 1}, {x, y + 2}, {x, y + 3}}
-	case 4:
+	case 0:
 		// ::
 		return [][2]int{{x, y}, {x, y + 1}, {x + 1, y}, {x + 1, y + 1}}
 	}
