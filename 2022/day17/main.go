@@ -11,17 +11,28 @@ import (
 //go:embed input.txt
 var jetBlows []byte
 
-func main() {
-	fmt.Println(findMaxHeight(2022))
+type rockCacheKey struct {
+	x          int
+	rockType   int
+	jetBlowIdx int
 }
 
-func findMaxHeight(maxRockCount int) int {
+type rockCacheValue struct {
+	rockIdx int
+	height  int
+}
+
+func main() {
+	fmt.Println(findMaxHeight(2022, nil))
+}
+
+func findMaxHeight(maxRockCount int, cache map[rockCacheKey]rockCacheValue) int {
 	jetIdx, maxHeight, rockCount := 0, 0, 0
-	x, y := 2, 3
-	well := make([][7]int, 0)
+	x, y := 3, 4
+	well := make([][8]int, 0)
 
 	for i := 0; i < 1000000; i++ {
-		var row [7]int
+		var row [8]int
 		well = append(well, row)
 	}
 	for {
@@ -40,14 +51,14 @@ func findMaxHeight(maxRockCount int) int {
 			y = y - 1
 		} else {
 			maxHeight = max(maxHeight, getHeight(x, y, rockType))
-			x, y = 2, maxHeight+4
+			x, y = 3, maxHeight+4
 			rockCount++
 			if rockCount == maxRockCount {
 				break
 			}
 		}
 	}
-	return maxHeight + 1
+	return maxHeight
 
 }
 
@@ -60,7 +71,7 @@ func getHeight(x, y, rockType int) int {
 	return height
 }
 
-func movePiece(curX, curY, x, y, rockType int, well [][7]int) {
+func movePiece(curX, curY, x, y, rockType int, well [][8]int) {
 	curCoords := getCoordinatesForPiece(curX, curY, rockType)
 	for _, coord := range curCoords {
 		well[coord[1]][coord[0]] = 0
@@ -74,12 +85,12 @@ func movePiece(curX, curY, x, y, rockType int, well [][7]int) {
 	//printWell(well)
 }
 
-func printWell(well [][7]int) {
+func printWell(well [][8]int) {
 	time.Sleep(100 * time.Millisecond)
 	goterm.Flush()
 	goterm.MoveCursor(1, 6)
-	for y := 4000; y >= 0; y-- {
-		for x := 0; x < 7; x++ {
+	for y := 4000; y >= 1; y-- {
+		for x := 1; x < 8; x++ {
 			if well[y][x] == 1 {
 				fmt.Printf(goterm.Color("#", goterm.BLUE))
 			} else {
@@ -91,7 +102,7 @@ func printWell(well [][7]int) {
 	//goterm.Clear()
 }
 
-func canGoToPos(curX, curY, x, y, rockType int, well [][7]int) bool {
+func canGoToPos(curX, curY, x, y, rockType int, well [][8]int) bool {
 	curCoordinates := getCoordinatesForPiece(curX, curY, rockType)
 	curCoordMap := make(map[[2]int]struct{})
 	for _, coord := range curCoordinates {
@@ -105,7 +116,7 @@ func canGoToPos(curX, curY, x, y, rockType int, well [][7]int) bool {
 		newX := coord[0]
 		newY := coord[1]
 		//fmt.Printf("x: %d, y: %d\n", newX, newY)
-		if newX < 0 || newX > 6 || newY < 0 {
+		if newX < 1 || newX > 7 || newY < 1 {
 			return false
 		}
 		if well[newY][newX] == 1 {
