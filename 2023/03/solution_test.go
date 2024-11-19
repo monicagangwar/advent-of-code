@@ -9,6 +9,9 @@ import (
 //go:embed input.txt
 var input string
 
+//go:embed sample.txt
+var sample string
+
 func TestSolution(t *testing.T) {
 	type test struct {
 		name            string
@@ -20,7 +23,7 @@ func TestSolution(t *testing.T) {
 	tests := []test{
 		{
 			name:            "with sample",
-			input:           "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598..",
+			input:           sample,
 			expectedPartOne: 4361,
 			expectedPartTwo: 467835,
 		}, {
