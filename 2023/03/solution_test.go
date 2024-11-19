@@ -2,7 +2,6 @@ package _3
 
 import (
 	_ "embed"
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -23,12 +22,12 @@ func TestSolution(t *testing.T) {
 			name:            "with sample",
 			input:           "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598..",
 			expectedPartOne: 4361,
-			expectedPartTwo: -1,
+			expectedPartTwo: 467835,
 		}, {
 			name:            "with large input",
 			input:           input,
 			expectedPartOne: ***REMOVED***,
-			expectedPartTwo: 0,
+			expectedPartTwo: ***REMOVED***,
 		},
 	}
 
@@ -42,7 +41,7 @@ func TestSolution(t *testing.T) {
 			}
 
 			if tst.expectedPartTwo != -1 {
-				if got := partTwo(parts); got != tst.expectedPartTwo {
+				if got := partTwo(parts, maxHeight, maxWidth); got != tst.expectedPartTwo {
 					t.Errorf("partTwo() = %v, want %v", got, tst.expectedPartTwo)
 				}
 			}
@@ -144,7 +143,7 @@ func partOne(parts [][]rune, maxHeight, maxWidth int) int64 {
 					x, y := coordinates[0], coordinates[1]
 					num := constructPartNumber(parts, visited, x, y, maxHeight, maxWidth)
 					if num != -1 {
-						fmt.Println(num)
+						//fmt.Println(num)
 						partsSum += int64(num)
 					}
 
@@ -155,6 +154,31 @@ func partOne(parts [][]rune, maxHeight, maxWidth int) int64 {
 	return partsSum
 }
 
-func partTwo(parts [][]rune) int64 {
-	return 0
+func partTwo(parts [][]rune, maxHeight, maxWidth int) int64 {
+	visited := make([][]bool, maxHeight)
+	for i := range visited {
+		visited[i] = make([]bool, maxWidth)
+	}
+
+	gearRatioSum := int64(0)
+
+	for i := 0; i < maxHeight; i++ {
+		for j := 0; j < maxWidth; j++ {
+			if parts[i][j] == '*' {
+				nums := make([]int, 0)
+				neighborCoordinates := getNeighborCoordinates(i, j)
+				for _, coordinates := range neighborCoordinates {
+					x, y := coordinates[0], coordinates[1]
+					num := constructPartNumber(parts, visited, x, y, maxHeight, maxWidth)
+					if num != -1 {
+						nums = append(nums, num)
+					}
+				}
+				if len(nums) == 2 {
+					gearRatioSum += int64(nums[0] * nums[1])
+				}
+			}
+		}
+	}
+	return gearRatioSum
 }
