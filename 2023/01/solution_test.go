@@ -11,6 +11,7 @@ var input string
 
 func TestSolution(t *testing.T) {
 	type test struct {
+		name            string
 		input           string
 		expectedPartOne int32
 		expectedPartTwo int32
@@ -18,15 +19,18 @@ func TestSolution(t *testing.T) {
 
 	tests := []test{
 		{
+			name:            "with sample only part one",
 			input:           "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet",
 			expectedPartOne: 142,
 			expectedPartTwo: -1,
 		}, {
+			name:            "with sample only part two",
 			input:           "two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen",
 			expectedPartOne: -1,
 			expectedPartTwo: 281,
 		},
 		{
+			name:            "with large input both parts",
 			input:           input,
 			expectedPartOne: ***REMOVED***,
 			expectedPartTwo: ***REMOVED***,
@@ -34,24 +38,26 @@ func TestSolution(t *testing.T) {
 	}
 
 	for _, tst := range tests {
-		if tst.expectedPartOne != -1 {
-			if got := partOne(tst.input); got != tst.expectedPartOne {
-				t.Errorf("partOne() = %v, want %v", got, tst.expectedPartOne)
+		t.Run(tst.name, func(t *testing.T) {
+			lines := strings.Split(tst.input, "\n")
+			if tst.expectedPartOne != -1 {
+				if got := partOne(lines); got != tst.expectedPartOne {
+					t.Errorf("partOne() = %v, want %v", got, tst.expectedPartOne)
+				}
 			}
-		}
 
-		if tst.expectedPartTwo != -1 {
-			if got := partTwo(tst.input); got != tst.expectedPartTwo {
-				t.Errorf("partTwo() = %v, want %v", got, tst.expectedPartTwo)
+			if tst.expectedPartTwo != -1 {
+				if got := partTwo(lines); got != tst.expectedPartTwo {
+					t.Errorf("partTwo() = %v, want %v", got, tst.expectedPartTwo)
+				}
 			}
-		}
+		})
 
 	}
 
 }
 
-func partOne(input string) int32 {
-	lines := strings.Split(input, "\n")
+func partOne(lines []string) int32 {
 	calibrationSum := int32(0)
 
 	for _, line := range lines {
@@ -77,9 +83,7 @@ func partOne(input string) int32 {
 	return calibrationSum
 }
 
-func partTwo(input string) int32 {
-	lines := strings.Split(input, "\n")
-
+func partTwo(lines []string) int32 {
 	numKeywords := []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 	calibrationSum := int32(0)
 
