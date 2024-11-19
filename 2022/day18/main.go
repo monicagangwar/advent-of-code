@@ -40,6 +40,7 @@ func main() {
 
 	}
 	fmt.Println(totalSurfaces)
+
 }
 
 func parseCoord(coords *[][3]int) {

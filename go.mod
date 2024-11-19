@@ -1,6 +1,6 @@
 module github.com/monicagangwar/advent-of-code
 
-go 1.21
+go 1.22.3
 
 require (
 	github.com/buger/goterm v1.0.4
