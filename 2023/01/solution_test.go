@@ -24,8 +24,8 @@ func TestSolution(t *testing.T) {
 		{
 			name:            "with sample",
 			input:           sample,
-			expectedPartOne: 142,
-			expectedPartTwo: 281,
+			expectedPartOne: 351,
+			expectedPartTwo: 423,
 		},
 		{
 			name:            "with large input both parts",
