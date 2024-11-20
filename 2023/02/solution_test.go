@@ -32,8 +32,8 @@ func TestSolution(t *testing.T) {
 		}, {
 			name:            "with large input",
 			input:           input,
-			expectedPartOne: ***REMOVED***,
-			expectedPartTwo: ***REMOVED***,
+			expectedPartOne: 0,
+			expectedPartTwo: 0,
 		},
 	}
 

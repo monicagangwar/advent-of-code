@@ -22,21 +22,16 @@ func TestSolution(t *testing.T) {
 
 	tests := []test{
 		{
-			name:            "with sample only part one",
+			name:            "with sample",
 			input:           sample,
 			expectedPartOne: 142,
-			expectedPartTwo: -1,
-		}, {
-			name:            "with sample only part two",
-			input:           "two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen",
-			expectedPartOne: -1,
 			expectedPartTwo: 281,
 		},
 		{
 			name:            "with large input both parts",
 			input:           input,
-			expectedPartOne: ***REMOVED***,
-			expectedPartTwo: ***REMOVED***,
+			expectedPartOne: 0,
+			expectedPartTwo: 0,
 		},
 	}
 
