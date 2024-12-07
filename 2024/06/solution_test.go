@@ -85,9 +85,9 @@ func partOne(labMap [][]byte, guardPos [2]int) int {
 
 		if labMap[nextPos[0]][nextPos[1]] == '#' {
 			curDir = getNextDirection(curDir)
-			nextPos = getNextPos(guardPos, curDir)
+		} else {
+			guardPos = nextPos
 		}
-		guardPos = nextPos
 
 	}
 	return len(posVisited)
