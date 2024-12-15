@@ -1,6 +1,8 @@
 module github.com/monicagangwar/advent-of-code
 
-go 1.22.3
+go 1.23.2
+
+toolchain go1.23.4
 
 require (
 	github.com/buger/goterm v1.0.4
