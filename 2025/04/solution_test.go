@@ -101,23 +101,20 @@ func canBeAccessed(grid [][]bool, i, j int) bool {
 	if !grid[i][j] {
 		return false
 	}
-	neighbors := [8][2]int{
-		[2]int{i, j - 1},
-		[2]int{i, j + 1},
-		[2]int{i - 1, j - 1},
-		[2]int{i - 1, j},
-		[2]int{i - 1, j + 1},
-		[2]int{i + 1, j - 1},
-		[2]int{i + 1, j},
-		[2]int{i + 1, j + 1},
-	}
 	countNeighbours := 0
 	lenGridX := len(grid[i])
 	lenGridY := len(grid)
-	for _, n := range neighbors {
-		if n[0] >= 0 && n[0] < lenGridX && n[1] >= 0 && n[1] < lenGridY && grid[n[0]][n[1]] {
-			countNeighbours++
+	for nI := i - 1; nI <= i+1; nI++ {
+		for nJ := j - 1; nJ <= j+1; nJ++ {
+			if nI == i && nJ == j {
+				continue
+			}
+			if nI >= 0 && nI < lenGridX && nJ >= 0 && nJ < lenGridY && grid[nI][nJ] {
+				countNeighbours++
+
+			}
 		}
 	}
+
 	return countNeighbours < 4
 }
