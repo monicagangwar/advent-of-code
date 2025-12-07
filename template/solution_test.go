@@ -35,15 +35,14 @@ func TestSolution(t *testing.T) {
 
 	for _, tst := range tests {
 		t.Run(tst.name, func(t *testing.T) {
-			parseInput(tst.input)
 			if tst.expectedPartOne != -1 {
-				if got := partOne(); got != tst.expectedPartOne {
+				if got := partOne(parseInput(tst.input)); got != tst.expectedPartOne {
 					t.Errorf("partOne() = %v, want %v", got, tst.expectedPartOne)
 				}
 			}
 
 			if tst.expectedPartTwo != -1 {
-				if got := partTwo(); got != tst.expectedPartTwo {
+				if got := partTwo(parseInput(tst.input)); got != tst.expectedPartTwo {
 					t.Errorf("partTwo() = %v, want %v", got, tst.expectedPartTwo)
 				}
 			}
@@ -57,10 +56,10 @@ func parseInput(input string) string {
 	return ""
 }
 
-func partOne() int {
+func partOne(input string) int {
 	return 0
 }
 
-func partTwo() int {
+func partTwo(input string) int {
 	return 0
 }
